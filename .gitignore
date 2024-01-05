@@ -1,0 +1,22 @@
+# Godot
+.godot
+
+# Rogo
+.rogo
+/Build
+BuildLocal.rogue
+Local.rogo
+/SynchedProjects.rogo
+
+# SCons
+.sconsign.dblite
+
+# Vim
+*.swo
+*.swp
+
+# Mac
+.DS_Store
+
+# Vim
+*~
