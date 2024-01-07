@@ -1,17 +1,24 @@
 class_name ProgressFn extends Node
 
+## Find the named function and return it as a Callable.
+## E.g. calling ProgressFn.find("Bouce In") returns ProgressFn.BOUNCE_IN
 static func find( function_name:String )->Callable:
 	function_name = function_name.to_snake_case().to_upper()
 	return Callable( ProgressFn, function_name )
 
+## Returns a list of callable progress function names in DEFINITION_CASE, e.g.
+## ["BOUNCE","BOUNCE_IN","BOUNCE_OUT",...].
 static func function_names()->Array[String]:
 	var result:Array[String] = []
 	for m in ProgressFn.new().get_method_list():
-		if m.flags & MethodFlags.METHOD_FLAG_STATIC and m.args.size() == 1 and m.args[0].name == "p":
-			result.push_back( m.name )
+		if m.flags & MethodFlags.METHOD_FLAG_STATIC:
+			if m.args.size() == 1 and m.args[0].name == "p":
+				result.push_back( m.name )
 	return result
 
-static func pretty_function_names()->Array[String]:
+## Returns a list of callable progress function names in Title Case, e.g.
+## ["Bounce","Bounce In","Bounce Out",...].
+static func title_case_function_names()->Array[String]:
 	var result:Array[String] = []
 	var names = function_names()
 	for name in names:

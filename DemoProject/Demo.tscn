@@ -1,6 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://dysoeliknsubd"]
+[gd_scene load_steps=5 format=3 uid="uid://dysoeliknsubd"]
 
 [ext_resource type="Script" path="res://Demo.gd" id="1_kbpur"]
+[ext_resource type="Script" path="res://ActionQ.gd" id="2_7kafw"]
+[ext_resource type="Script" path="res://IntervalAction.gd" id="3_16ha0"]
+[ext_resource type="Script" path="res://ActionWait.gd" id="4_g2xcx"]
 
 [node name="Demo" type="Node2D"]
 script = ExtResource("1_kbpur")
+
+[node name="ActionQ" type="Node" parent="."]
+script = ExtResource("2_7kafw")
+auto_execute = true
+looping = false
+asynchronous = false
+
+[node name="IntervalAction" type="Node" parent="ActionQ"]
+script = ExtResource("3_16ha0")
+progress_fn = "Linear"
+
+[node name="Action2" type="Node" parent="ActionQ"]
+script = ExtResource("3_16ha0")
+progress_fn = "Linear"
+
+[node name="ActionWait" type="Node" parent="ActionQ"]
+script = ExtResource("4_g2xcx")
+
+[node name="ActionWait2" type="Node" parent="ActionQ"]
+script = ExtResource("4_g2xcx")
+seconds = 1.0
+
+[node name="ActionWait3" type="Node" parent="ActionQ"]
+script = ExtResource("4_g2xcx")
+seconds = 1.0
