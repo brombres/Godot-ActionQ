@@ -7,14 +7,23 @@ var _t:float
 
 var progress_fn:String = "Linear" :
 	set(value):
-		if value != progress_fn:
-			value = progress_fn
+		if progress_fn != value:
+			progress_fn = value
 			_progress_fn = ProgressFn.find( value )
 
 var _progress_fn:Callable = ProgressFn.LINEAR
 
 func on_start():
 	_t = 0.0
+
+## Restores the state of this action from a dictionary.
+func restore_state( dictionary:Dictionary ):
+	_t = dictionary.t
+	duration = dictionary.duration
+
+## Saves the state of this action to a dictionary.
+func save_state()->Dictionary:
+	return { "t":_t, "duration":duration }
 
 func _get_property_list():
 	var properties = []
@@ -30,7 +39,7 @@ func _get_property_list():
 	return properties
 
 func update( dt:float )->bool:
-	_t = max( _t+dt, 1.0 )
+	_t = min( _t+dt, duration )
 	on_update( _progress_fn.call(dt) )
-	return _t == 1.0
+	return _t == duration
 

@@ -7,14 +7,14 @@ class_name ActionQ extends Action
 
 var _running  := false
 var _finished := false
-var _ip := -1
+var _ip := 0
 var _cur_action = null
 var _actions := []
 
 func on_start():
 	_finished = false
 	_running = true
-	_ip = -1
+	_ip = 0
 	_actions = []
 
 ## Return 'true' when finished.
@@ -34,7 +34,6 @@ func update( dt:float )->bool:
 			var action = _actions[i]
 			if action.update( dt ):
 				action.on_finish()
-				action.on_effect()
 			else:
 				_actions[write_i] = action
 				write_i += 1
@@ -44,7 +43,7 @@ func update( dt:float )->bool:
 	else:
 		while _cur_action and _cur_action.update( dt ):
 			_cur_action.on_finish()
-			_cur_action.on_effect()
+			_ip += 1
 			finished = not _advance_action()
 
 	if not finished: return false
@@ -56,12 +55,6 @@ func update( dt:float )->bool:
 		_finished = true
 		_running = false
 		return true
-
-func on_finish():
-	pass
-
-func on_effect():
-	pass
 
 ## Called directly on an ActionQ or indirectly when this action is an active action of an
 ## ActionQ that save_state() is called on.
@@ -95,6 +88,7 @@ func restore_state( dictionary:Dictionary ):
 	asynchronous = dictionary.asynchronous
 	_running     = dictionary.running
 	_finished    = dictionary.finished
+	_ip          = 0
 
 	var actions = dictionary.actions
 	if actions:
@@ -106,28 +100,28 @@ func restore_state( dictionary:Dictionary ):
 				action.restore_state( action_info.state )
 		elif actions.size():
 			var action_info = actions[0]
-			_cur_action = get_child( action_info.ip )
-			if action_info.state:
+			_ip = action_info.ip
+			if _advance_action() and action_info.state:
 				_cur_action.restore_state( action_info.state )
 
 func run():
 	_finished = false
 	_running = true
-	_ip = -1
-	_actions = []
+	_ip = 0
+	_actions.clear()
 	if asynchronous:
 		while _advance_action():
 			_actions.push_back( _cur_action )
+			_ip += 1
 	else:
 		_advance_action()
 
 func _advance_action()->bool:
-	_ip += 1
 	var child_count = get_child_count()
 
 	while _ip < child_count:
 		_cur_action = get_child( _ip )
-		if _cur_action.has_method("on_start"):
+		if _cur_action.visible and _cur_action.has_method("on_start"):
 			_cur_action.on_start()
 			return true
 		_ip += 1

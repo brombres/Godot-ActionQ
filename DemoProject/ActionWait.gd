@@ -1,4 +1,4 @@
-class_name ActionWait extends IntervalAction
+class_name ActionWait extends Action
 
 @export var seconds := 0.5
 
@@ -7,21 +7,16 @@ var _remaining:float
 func on_start():
 	_remaining = seconds
 
-func on_finish():
-	prints( seconds )
-
-## Called directly on an ActionQ or indirectly when this action is an active action of an
-## ActionQ that save_state() is called on.
-func save_state()->Dictionary:
-	return { "seconds":seconds }
-
-## Called directly on an ActionQ or indirectly when this action is an active action of an
-## ActionQ that restore_state() is called on.
+## Restores the state of this action from a dictionary.
 func restore_state( dictionary:Dictionary ):
 	seconds = dictionary.seconds
+	_remaining = dictionary.remaining
+
+## Saves the state of this action to a dictionary.
+func save_state()->Dictionary:
+	return { "seconds":seconds, "remaining":_remaining }
 
 func update( dt:float )->bool:
-	on_update( dt )
-	_remaining -= dt
-	return _remaining <= 0
+	_remaining = max( _remaining-dt, 0.0 )
+	return _remaining == 0.0
 

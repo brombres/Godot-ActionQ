@@ -1,25 +1,15 @@
-@tool
-class_name Action extends Node
+class_name Action extends Node2D
 
 ## Called when this action begins to execute. Override and set up initial state.
 func on_start():
 	pass
 
 ## Override and update the state of this action.
-func on_update( progress:float ):
+func on_update( _progress:float ):
 	pass
 
 ## Called when this action is finished. Override and perform any cleanup necessary.
 func on_finish():
-	pass
-
-## Called when this action is finished (after on_finish()) AND called when this action is
-## skipped during a call to ActionQ.seek(). Override and adjust any necessary global state.
-## For example, an ActionQ can be used to implement a tutorial that adjusts the game world
-## after various steps. If the game is saved along with an ActionQ save_state()) and the
-## ActionQ is later restored with restore_state(), the ActionQ will seek to the IP and call
-## on_effect() on each action being skipped.
-func on_effect():
 	pass
 
 ## Called directly on an ActionQ or indirectly when this action is an active action of an
@@ -29,7 +19,7 @@ func save_state()->Dictionary:
 
 ## Called directly on an ActionQ or indirectly when this action is an active action of an
 ## ActionQ that restore_state() is called on.
-func restore_state( dictionary:Dictionary ):
+func restore_state( _dictionary:Dictionary ):
 	pass
 
 ## Override and return true if this action is finished, false if it needs to be updated again.

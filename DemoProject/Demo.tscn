@@ -2,33 +2,25 @@
 
 [ext_resource type="Script" path="res://Demo.gd" id="1_kbpur"]
 [ext_resource type="Script" path="res://ActionQ.gd" id="2_7kafw"]
-[ext_resource type="Script" path="res://IntervalAction.gd" id="3_16ha0"]
-[ext_resource type="Script" path="res://ActionWait.gd" id="4_g2xcx"]
+[ext_resource type="Script" path="res://ActionExecute.gd" id="3_ctfmg"]
+[ext_resource type="Script" path="res://ActionWait.gd" id="4_tucip"]
 
 [node name="Demo" type="Node2D"]
 script = ExtResource("1_kbpur")
 
-[node name="ActionQ" type="Node" parent="."]
+[node name="ActionQ" type="Node2D" parent="."]
 script = ExtResource("2_7kafw")
 auto_execute = true
-looping = false
-asynchronous = false
 
-[node name="IntervalAction" type="Node" parent="ActionQ"]
-script = ExtResource("3_16ha0")
-progress_fn = "Linear"
+[node name="ActionExecute" type="Node2D" parent="ActionQ"]
+script = ExtResource("3_ctfmg")
+statement = "print(\"Hello World!\")"
 
-[node name="Action2" type="Node" parent="ActionQ"]
-script = ExtResource("3_16ha0")
-progress_fn = "Linear"
+[node name="ActionWait" type="Node2D" parent="ActionQ"]
+script = ExtResource("4_tucip")
+seconds = 2.0
 
-[node name="ActionWait" type="Node" parent="ActionQ"]
-script = ExtResource("4_g2xcx")
-
-[node name="ActionWait2" type="Node" parent="ActionQ"]
-script = ExtResource("4_g2xcx")
-seconds = 1.0
-
-[node name="ActionWait3" type="Node" parent="ActionQ"]
-script = ExtResource("4_g2xcx")
-seconds = 1.0
+[node name="ActionExecute2" type="Node2D" parent="ActionQ" node_paths=PackedStringArray("node")]
+script = ExtResource("3_ctfmg")
+node = NodePath("../..")
+statement = "node.test()"

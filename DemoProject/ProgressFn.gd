@@ -21,8 +21,8 @@ static func function_names()->Array[String]:
 static func title_case_function_names()->Array[String]:
 	var result:Array[String] = []
 	var names = function_names()
-	for name in names:
-		var parts = name.split( "_" )
+	for fn_name in names:
+		var parts = fn_name.split( "_" )
 		for i in range(parts.size()):
 			parts[i] = parts[i].to_pascal_case()
 		result.push_back( " ".join(parts) )
