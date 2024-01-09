@@ -8,40 +8,19 @@ class_name ActionExecute extends Action
 	set(value):
 		if statement != value:
 			statement = value
+			_callable = null
 
-var _configured := false
-var _script:GDScript
-var _context:Object
-
-const _source_template:String = """
-extends Object
-
-func execute( node:Node ):
-	node = node # eliminate unused var warning
-	%s
-"""
+var _callable:DynamicFunction
 
 func _init( _statement="", _node=null ):
-	self.statement = _statement
-	self.node = _node
-
-func _reset():
-	_configured = false
-	_script = null
-	_context = null
+	statement = _statement
+	node = _node
 
 func on_start():
-	if not _configured:
-		if statement != "":
-			_script = GDScript.new()
-			_script.source_code = _source_template % statement
-			_script.reload()
-
-			_context = Object.new()
-			_context.set_script( _script )
-		_configured = true
+	if not _callable:
+		_callable = DynamicFunction.new( ["node"], statement )
 
 ## Override and return true if this action is finished, false if it needs to be updated again.
 func update( _dt:float )->bool:
-	if _context: _context.execute( node )
+	if _callable: _callable.execute( [node] )
 	return true

@@ -11,6 +11,7 @@ var _ip := 0
 var _cur_action = null
 var _actions := []
 
+## Called when this ActionQ begins to execute.
 func on_start():
 	_finished = false
 	_running = true
@@ -25,34 +26,31 @@ func update( dt:float )->bool:
 	if not _running: return false
 
 	on_update( dt )
+	if not _finished:
+		if asynchronous:
+			var write_i = 0
+			for i in range(_actions.size()):
+				var action = _actions[i]
+				if action.update( dt ):
+					action.on_finish()
+				else:
+					_actions[write_i] = action
+					write_i += 1
+			while _actions.size() > write_i: _actions.pop_back()
+			_finished = (_actions.size() == 0)
 
-	var finished = false
+		else:
+			while _cur_action and _cur_action.update( dt ):
+				_cur_action.on_finish()
+				_ip += 1
+				_finished = not _advance_action()
 
-	if asynchronous:
-		var write_i = 0
-		for i in range(_actions.size()):
-			var action = _actions[i]
-			if action.update( dt ):
-				action.on_finish()
-			else:
-				_actions[write_i] = action
-				write_i += 1
-		while _actions.size() > write_i: _actions.pop_back()
-		finished = (_actions.size() == 0)
-
-	else:
-		while _cur_action and _cur_action.update( dt ):
-			_cur_action.on_finish()
-			_ip += 1
-			finished = not _advance_action()
-
-	if not finished: return false
+		if not _finished: return false
 
 	if looping:
 		run()
 		return false
 	else:
-		_finished = true
 		_running = false
 		return true
 
@@ -104,6 +102,7 @@ func restore_state( dictionary:Dictionary ):
 			if _advance_action() and action_info.state:
 				_cur_action.restore_state( action_info.state )
 
+## Begins execution of this ActionQ. Actions are processed in the _process() callback.
 func run():
 	_finished = false
 	_running = true

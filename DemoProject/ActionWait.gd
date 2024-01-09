@@ -6,6 +6,8 @@ var _remaining:float
 
 func on_start():
 	_remaining = seconds
+	var fn = DynamicFunction.new( ["a","b"], 'return a+b' )
+	prints( fn.execute([3,4]) )
 
 ## Restores the state of this action from a dictionary.
 func restore_state( dictionary:Dictionary ):
