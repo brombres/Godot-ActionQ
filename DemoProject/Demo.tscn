@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dysoeliknsubd"]
+[gd_scene load_steps=6 format=3 uid="uid://dysoeliknsubd"]
 
 [ext_resource type="Script" path="res://Demo.gd" id="1_kbpur"]
 [ext_resource type="Script" path="res://ActionQ.gd" id="2_7kafw"]
 [ext_resource type="Script" path="res://ActionExecute.gd" id="3_ctfmg"]
-[ext_resource type="Script" path="res://ActionWait.gd" id="4_tucip"]
+[ext_resource type="Script" path="res://ActionWaitUntil.gd" id="4_ohhtf"]
+[ext_resource type="Script" path="res://ActionInsertAction.gd" id="5_810tk"]
 
 [node name="Demo" type="Node2D"]
 script = ExtResource("1_kbpur")
@@ -16,9 +17,14 @@ auto_execute = true
 script = ExtResource("3_ctfmg")
 statement = "print(\"Hello World!\")"
 
-[node name="ActionWait" type="Node2D" parent="ActionQ"]
-script = ExtResource("4_tucip")
-seconds = 2.0
+[node name="ActionWaitUntil" type="Node2D" parent="ActionQ" node_paths=PackedStringArray("node")]
+visible = false
+script = ExtResource("4_ohhtf")
+node = NodePath("../..")
+expression = "node.mouse_clicked"
+
+[node name="ActionInsertAction" type="Node2D" parent="ActionQ"]
+script = ExtResource("5_810tk")
 
 [node name="ActionExecute2" type="Node2D" parent="ActionQ" node_paths=PackedStringArray("node")]
 script = ExtResource("3_ctfmg")

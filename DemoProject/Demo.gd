@@ -1,5 +1,7 @@
 extends Node2D
 
+var mouse_clicked := false
+
 func _ready():
 	pass
 
@@ -21,3 +23,13 @@ func _ready():
 
 func test():
 	prints( "Success!" )
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				mouse_clicked = true
+
+				#event.position)
+			#else:
+				#print("Left button was released")

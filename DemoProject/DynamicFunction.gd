@@ -2,7 +2,7 @@ class_name DynamicFunction extends RefCounted
 
 var arg_names:Array[String]
 var statement:String
-var object:Variant
+var object:RefCounted
 var returns_value:bool
 
 func _init( _arg_names:Array[String], _statement:String, _returns_value:bool=false ):
@@ -12,7 +12,7 @@ func _init( _arg_names:Array[String], _statement:String, _returns_value:bool=fal
 
 func execute( args:Array=[] ):
 	if not object:
-		var source = "extends RefCounted\nfunc execute(%s):\n" % [",".join(arg_names)]
+		var source = "@tool\nextends RefCounted\nfunc execute(%s):\n" % [",".join(arg_names)]
 		for arg_name in arg_names:
 			source += "  %s = %s\n" % [arg_name,arg_name]  # avoid unused parameter warnings
 

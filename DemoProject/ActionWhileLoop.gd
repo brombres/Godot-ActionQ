@@ -1,4 +1,3 @@
-@tool
 class_name ActionWhileLoop extends ActionQ
 
 ## Checks the condition of this ActionWhileLoop.

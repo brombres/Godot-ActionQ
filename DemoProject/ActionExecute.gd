@@ -11,16 +11,18 @@ class_name ActionExecute extends Action
 			_callable = null
 
 var _callable:DynamicFunction
+var _callback:Callable
 
-func _init( _statement="", _node=null ):
-	statement = _statement
+func _init( callback=null, _node=null ):
+	if callback: _callback = callback
 	node = _node
 
 func on_start():
-	if not _callable:
+	if not _callable and statement != "":
 		_callable = DynamicFunction.new( ["node"], statement )
 
 ## Override and return true if this action is finished, false if it needs to be updated again.
 func update( _dt:float )->bool:
-	if _callable: _callable.execute( [node] )
+	if _callable:   _callable.execute( [node] )
+	elif _callback: _callback.call()
 	return true

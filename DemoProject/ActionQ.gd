@@ -32,6 +32,7 @@ func update( dt:float )->bool:
 			for i in range(_actions.size()):
 				var action = _actions[i]
 				if action.update( dt ):
+					if action.has_method("on_finish"): action.on_finish()
 					action.on_finish()
 				else:
 					_actions[write_i] = action
@@ -41,7 +42,7 @@ func update( dt:float )->bool:
 
 		else:
 			while _cur_action and _cur_action.update( dt ):
-				_cur_action.on_finish()
+				if _cur_action.has_method("on_finish"): _cur_action.on_finish()
 				_ip += 1
 				_finished = not _advance_action()
 
@@ -69,9 +70,11 @@ func save_state()->Dictionary:
 		var actions:Array[int] = []
 		if _actions.size():
 			for action in _actions:
-				actions.push_back( {"ip":action.get_index(),"state":action.save_state()} )
+				if action.has_method("save_state"):
+					actions.push_back( {"ip":action.get_index(),"state":action.save_state()} )
 		elif _cur_action:
-			actions.push_back( {"ip":_cur_action.get_index(),"state":_cur_action.save_state()} )
+			if _cur_action.has_method("save_state"):
+				actions.push_back( {"ip":_cur_action.get_index(),"state":_cur_action.save_state()} )
 		elif not asynchronous:
 			actions.push_back( {"ip":_ip,"state":null} )
 		result["actions"] = actions
@@ -95,12 +98,12 @@ func restore_state( dictionary:Dictionary ):
 			for action_info in actions:
 				var action = get_child( action_info.ip )
 				_actions.push_back( action )
-				action.restore_state( action_info.state )
+				if action.has_method("restore_state"): action.restore_state( action_info.state )
 		elif actions.size():
 			var action_info = actions[0]
 			_ip = action_info.ip
 			if _advance_action() and action_info.state:
-				_cur_action.restore_state( action_info.state )
+				if _cur_action.has_method("restore_state"): _cur_action.restore_state( action_info.state )
 
 ## Begins execution of this ActionQ. Actions are processed in the _process() callback.
 func run():
@@ -120,8 +123,8 @@ func _advance_action()->bool:
 
 	while _ip < child_count:
 		_cur_action = get_child( _ip )
-		if _cur_action.visible and _cur_action.has_method("on_start"):
-			_cur_action.on_start()
+		if _cur_action.visible and _cur_action.has_method("update"):
+			if _cur_action.has_method("on_start"): _cur_action.on_start()
 			return true
 		_ip += 1
 
